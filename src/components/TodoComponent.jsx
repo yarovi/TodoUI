@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { createTodo } from '../service/TodoService'
-import { useNavigate } from 'react-router-dom'
+import { createTodo, updateTodo,getTodoById } from '../service/TodoService'
+import { useNavigate ,useParams} from 'react-router-dom'
 
 const TodoComponent = () => {
 
@@ -9,21 +9,44 @@ const TodoComponent = () => {
     const [description, setDescription] = useState('')
     const [completed, setCompleted] = useState(false)
     const navigate = useNavigate()
+    const {id} = useParams()
+
+    useEffect(() => {
+        getTodoById(id)
+        .then(response => {
+            setTitle(response.data.title)
+            setDescription(response.data.description)
+            setCompleted(response.data.completed)
+        })
+        .catch(error => {
+            console.log('Error fetching todo')
+        })
+
+
+    }
+    , [])
+
 
     function saveOrUpdateTodo(e) {
         e.preventDefault()
-        console.log('Save Todo')
-
         const todo = {
             title: title,
             description: description,
             completed: completed
         }
 
-        console.log('Todo => ' + JSON.stringify(todo))
-
-
-        createTodo(todo)
+        if (id) {
+            updateTodo(todo, id)
+            .then(response => {
+                console.log('Todo updated successfully')
+                navigate('/todos')
+            })
+            .catch(error => {
+                console.log('Error updating todo')
+            })
+        }
+        else {
+            createTodo(todo)
             .then(response => {
                 console.log('Todo created successfully')
                 navigate('/todos')
@@ -31,14 +54,26 @@ const TodoComponent = () => {
             .catch(error => {
                 console.log('Error creating todo')
             })
+        }
 
+        
+
+        console.log('Todo => ' + JSON.stringify(todo))
+
+
+        
+
+    }
+
+    function pageTitle() {
+        return id ? 'Update Todo' : 'Add Todo'
     }
 
     return (
         <div className='container'>
             <div className='row'>
                 <div className='card col-md-6 offset-md-3 offset-md-3'>
-                    <h2 className='text-center'>Add Todo</h2>
+                    {pageTitle()}
                     <div className='card-body'>
                         <form>
                             <div className='form-group'>
@@ -53,7 +88,7 @@ const TodoComponent = () => {
                             </div>
                             <div className='form-check'>
                                 <input type='checkbox' 
-                                className='form-check-input' value={completed}
+                                className='form-check-input' checked={completed}
                                 onChange={e => setCompleted(e.target.checked)} />
                                 <label className='form-check-label' >Completed</label>
 

@@ -1,5 +1,5 @@
 import React, { useState , useEffect} from 'react'
-import { getAllTodos } from '../service/TodoService'
+import { deleteTodo, getAllTodos } from '../service/TodoService'
 import { useNavigate } from 'react-router'
 
 const ListTodoComponent = () => {
@@ -58,6 +58,24 @@ const ListTodoComponent = () => {
         console.log('Add New Todo')
         navigate('/add-todo')
     }
+
+    function updateTodo(id) {
+        console.log('Update Todo')
+        navigate(`/update-todo/${id}`)
+    }
+
+    function removeTodo (id) {
+        console.log('Delete Todo')
+
+        deleteTodo(id)
+        .then(response => {
+            console.log('Todo deleted successfully')
+            listTodos()
+        })
+        .catch(error => {
+            console.log('Error deleting todo')
+        })  
+    }   
     return (
         <div className='container'>
 
@@ -70,6 +88,7 @@ const ListTodoComponent = () => {
                             <th>Title</th>
                             <th>Description</th>
                             <th>Completed</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,6 +98,10 @@ const ListTodoComponent = () => {
                                     <td>{todo.title}</td>
                                     <td>{todo.description}</td>
                                     <td>{todo.completed ? 'YEs':'NO'}</td>
+                                    <td>
+                                        <button className='btn btn-info' onClick={()=>updateTodo(todo.id)}>Update</button>
+                                        <button className='btn btn-danger' onClick={()=>removeTodo(todo.id)}>Delete</button>
+                                    </td>
                                 </tr>
                             ))
                         }
@@ -86,8 +109,6 @@ const ListTodoComponent = () => {
 
                 </table>
             </div>
-
-
 
         </div>
     )
