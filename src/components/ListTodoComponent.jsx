@@ -1,5 +1,5 @@
 import React, { useState , useEffect} from 'react'
-import { deleteTodo, getAllTodos } from '../service/TodoService'
+import { deleteTodo, getAllTodos, completeTodo, unCompleteTodo } from '../service/TodoService'
 import { useNavigate } from 'react-router'
 
 const ListTodoComponent = () => {
@@ -76,6 +76,31 @@ const ListTodoComponent = () => {
             console.log('Error deleting todo')
         })  
     }   
+
+    function markedCompletedTodo(id) {
+        console.log('Completed Todo')
+        completeTodo(id)
+        .then(response => {
+            console.log('Todo completed successfully')
+            listTodos()
+        })
+        .catch(error => {
+            console.log('Error completing todo')
+        })
+    }
+
+    function markedUnCompletedTodo(id) {
+        console.log('UnCompleted Todo')
+        unCompleteTodo(id)
+        .then(response => {
+            console.log('Todo uncompleted successfully')
+            listTodos()
+        })
+        .catch(error => {
+            console.log('Error uncompleting todo')
+        }
+        )
+    }
     return (
         <div className='container'>
 
@@ -100,7 +125,9 @@ const ListTodoComponent = () => {
                                     <td>{todo.completed ? 'YEs':'NO'}</td>
                                     <td>
                                         <button className='btn btn-info' onClick={()=>updateTodo(todo.id)}>Update</button>
-                                        <button className='btn btn-danger' onClick={()=>removeTodo(todo.id)}>Delete</button>
+                                        <button className='btn btn-danger' onClick={()=>removeTodo(todo.id)}  style={{marginLeft: "10px"}}>Delete</button>
+                                        <button className='btn btn-success' onClick={()=>markedCompletedTodo(todo.id)} style={{marginLeft: "10px"}}>Completed</button>
+                                        <button className='btn btn-info' onClick={()=>markedUnCompletedTodo(todo.id)} style={{marginLeft: "10px"}}>UnCompleted</button>
                                     </td>
                                 </tr>
                             ))
