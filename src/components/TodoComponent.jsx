@@ -12,17 +12,17 @@ const TodoComponent = () => {
     const {id} = useParams()
 
     useEffect(() => {
-        getTodoById(id)
-        .then(response => {
-            setTitle(response.data.title)
-            setDescription(response.data.description)
-            setCompleted(response.data.completed)
-        })
-        .catch(error => {
-            console.log('Error fetching todo')
-        })
-
-
+        if(id){
+            getTodoById(id)
+            .then(response => {
+                setTitle(response.data.title)
+                setDescription(response.data.description)
+                setCompleted(response.data.completed)
+            })
+            .catch(error => {
+                console.log('Error fetching todo')
+            })
+        }
     }
     , [])
 
