@@ -20,7 +20,10 @@ function LoginComponent() {
         .then(response=>{
             console.log(response.data)
 
-            const token ="Basic " + window.btoa(username + ":" + password)
+            //Only basic 
+            //const token ="Basic " + window.btoa(username + ":" + password)
+            //Bearer token
+            const token = 'Bearer ' + response.data.accessToken
             console.log(token)
             storeToken(token)
             saveLoggerInUser(username)
